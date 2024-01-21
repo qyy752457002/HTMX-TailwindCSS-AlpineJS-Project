@@ -1,0 +1,74 @@
+{#
+A rendered summarized entry
+- title 
+- published 
+- summary 
+- media_content (post image) 
+- author 
+- link
+- read 
+- feed_url
+#}
+
+<article class = "grid grid-cols-[300px_600px] mb-4">
+    {% if media_content %}
+        <img class = "aspect-video rounded-md shadow-md" 
+             src = "{{ media_content[0]['url'] }}"/>
+    {% endif %}
+
+    <!-- margin-left with a size of 8 units (32 px) -->
+    <!-- padding-top with a size of 4 units (16 px) -->
+    <!-- x-data = "{ read: {{ read | lower }} }": 
+        creating a new Alpine.js component with a read data property. 
+        The value of read is being set to the lowercase string representation of the read variable in the current context.
+    -->
+    <div class = "ml-8 pt-4 {{ 'col-start-2' if media_content else 'col-start-1 col-span-2 '}}"
+         x-data = "{ read: {{ read | lower }} }" >
+        <h2 class = "font-bold text-2x1">
+
+            <!-- viewBox去标记 当前的 entry -->
+            <!-- x-show = "!read"": 
+                The x-show directive is used in Alpine.js to conditionally display an element based on the truthiness of the expression within the directive. 
+                In this case, the expression is !read.
+
+                Therefore, x-show="!read" means that the HTML element this attribute is applied to will only be displayed when read is false. 
+                If read is true, the element will not be displayed.
+            -->
+            <svg x-show = "!read" viewBox = "0 0 16 16"
+                 xmlns = "http://www.w3.org/2000/svg"
+                 class="fill-emerald-500 h-3 w-3 inline-block mb-1">
+               <circle cx = "8" cy = "8" r = "8" />
+            </svg>
+            {{ title}}
+        </h2>
+        <p>
+            Published by <span class = "font-medium">{{ author }}</span> on <span class = "font-medium">{{ published }}</span>
+        </p>
+        <p class = "leading-6 mb-2">{{ summary }}</p>
+        <!-- x-on:click = "read = true": 
+            The x-on:click directive is used in Alpine.js to attach an event listener to an element.
+            In this case, it's attaching a click event listener. 
+            The code within the quotes is the JavaScript that will be executed when the event occurs.
+
+            您提供的代码片段看起来是与Alpine.js相关的，Alpine.js是一个轻量级的JavaScript框架。
+            让我们解析一下这段代码，以便理解其功能：
+
+            - `x-on:click`: 这是Alpine.js的一个指令，用于绑定一个点击事件监听器。在这个例子中，它监听的是点击事件。
+
+            - `"$dispatch('read', { read: read })"`: 这是在点击事件发生时执行的JavaScript表达式。
+                                                    `$dispatch` 是 Alpine.js 中用于触发自定义事件的方法。
+                                                    这里它触发了一个名为 'read' 的事件，并传递了一个包含 `read` 属性的对象作为事件的数据。
+
+            - `{ read: read }`: 这是传递给 'read' 事件的数据对象。
+                                它有一个属性 `read`，其值取自当前组件的 `read` 属性。
+
+            - `read = true;`: 这是一个简单的JavaScript赋值表达式。
+                              它将组件的 `read` 属性设置为 `true`。
+                              这通常用于改变组件的状态或触发界面的更新。
+
+            综上所述，当用户点击这个元素时，代码会触发一个名为 'read' 的事件，并将组件的 `read` 属性设置为 `true`。
+            这在创建交互式界面时很有用，比如在阅读列表中标记一个项目为已读。
+        -->
+        <a x-on:click = "$dispatch('read', { read: read }); read = true;" href = "{{ url_for('read_entry', feed_url = feed_url, entry_url = link) }}" class = "underline" target = "_blank">Read Article</a>
+    </div>
+</article>
